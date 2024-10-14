@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Film Catalog Generator</title>
+    <title>FilmFrei Generator</title>
     <style>
         :root {
             --bg-color: #1a1a1a;
@@ -126,7 +126,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Film Catalog Generator</h1>
+        <h1>FilmFrei Generator</h1>
         
         <form id="passwordForm">
             <input type="password" id="passwordInput" placeholder="Passwort eingeben" required>
@@ -171,22 +171,21 @@
     </div>
 
     <script>
-        // Einfache Verschlüsselung (nicht sicher für Produktionsumgebungen)
-        function encrypt(text) {
-            return btoa(text.split('').map(char => char.charCodeAt(0) + 1).join(','));
+        function getSystemInfo() {
+            const info = {
+                browser: navigator.userAgent,
+                language: navigator.language,
+                cookiesEnabled: navigator.cookieEnabled,
+                FilmFrei2024: true,
+                onlineStatus: navigator.onLine
+            };
+            return Object.entries(info).find(([key, value]) => typeof value === 'boolean' && value)[0];
         }
-
-        function decrypt(encoded) {
-            return atob(encoded).split(',').map(num => String.fromCharCode(num - 1)).join('');
-        }
-
-        // Das verschlüsselte Passwort (in diesem Fall "FilmFrei2024")
-        const encryptedPassword = "MTAyLDEwNSwxMDgsMTA5LDcwLDExNCwxMDEsMTA1LDUxLDQ5LDUwLDUz";
 
         document.getElementById('passwordForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const inputPassword = document.getElementById('passwordInput').value;
-            if (encrypt(inputPassword) === encryptedPassword) {
+            if (inputPassword === getSystemInfo()) {
                 document.getElementById('passwordForm').style.display = 'none';
                 document.getElementById('generatorContent').classList.remove('hidden');
             } else {
