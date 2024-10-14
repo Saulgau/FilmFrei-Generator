@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FilmFrei Generator</title>
+    <title>Film Catalog Generator</title>
     <style>
         :root {
             --bg-color: #1a1a1a;
@@ -74,6 +74,7 @@
         }
         input[type="text"],
         input[type="number"],
+        input[type="password"],
         textarea {
             width: 100%;
             padding: 12px;
@@ -109,48 +110,90 @@
             padding: 12px;
             font-family: 'Courier New', Courier, monospace;
         }
+        #passwordForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #passwordForm input {
+            margin-bottom: 10px;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Film Catalog Generator</h1>
         
-        <div class="btn-group">
-            <button id="btnKatalog" class="btn btn-primary">Filmfrei Katalog</button>
-            <button id="btnNormal" class="btn btn-secondary">Filmfrei Normal</button>
-        </div>
-        
-        <form id="filmForm">
-            <div class="form-group">
-                <label for="title">Titel:</label>
-                <input type="text" id="title" required>
-            </div>
-            <div class="form-group">
-                <label for="year">Jahr:</label>
-                <input type="number" id="year" required>
-            </div>
-            <div class="form-group">
-                <label>Dauer:</label>
-                <div class="duration-inputs">
-                    <input type="number" id="durationHours" min="0" required> <span>h</span>
-                    <input type="number" id="durationMinutes" min="0" max="59" required> <span>min</span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="poster">Poster URL:</label>
-                <input type="text" id="poster" required>
-            </div>
-            <div class="form-group">
-                <label for="streamUrl">Stream URL:</label>
-                <input type="text" id="streamUrl" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Generieren</button>
+        <form id="passwordForm">
+            <input type="password" id="passwordInput" placeholder="Passwort eingeben" required>
+            <button type="submit" class="btn btn-primary">Zugriff erhalten</button>
         </form>
-        
-        <textarea id="generatedOutput" readonly></textarea>
+
+        <div id="generatorContent" class="hidden">
+            <div class="btn-group">
+                <button id="btnKatalog" class="btn btn-primary">Filmfrei Katalog</button>
+                <button id="btnNormal" class="btn btn-secondary">Filmfrei Normal</button>
+            </div>
+            
+            <form id="filmForm">
+                <div class="form-group">
+                    <label for="title">Titel:</label>
+                    <input type="text" id="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="year">Jahr:</label>
+                    <input type="number" id="year" required>
+                </div>
+                <div class="form-group">
+                    <label>Dauer:</label>
+                    <div class="duration-inputs">
+                        <input type="number" id="durationHours" min="0" required> <span>h</span>
+                        <input type="number" id="durationMinutes" min="0" max="59" required> <span>min</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="poster">Poster URL:</label>
+                    <input type="text" id="poster" required>
+                </div>
+                <div class="form-group">
+                    <label for="streamUrl">Stream URL:</label>
+                    <input type="text" id="streamUrl" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Generieren</button>
+            </form>
+            
+            <textarea id="generatedOutput" readonly></textarea>
+        </div>
     </div>
 
     <script>
+        // Einfache Verschlüsselung (nicht sicher für Produktionsumgebungen)
+        function encrypt(text) {
+            return btoa(text.split('').map(char => char.charCodeAt(0) + 1).join(','));
+        }
+
+        function decrypt(encoded) {
+            return atob(encoded).split(',').map(num => String.fromCharCode(num - 1)).join('');
+        }
+
+        // Das verschlüsselte Passwort (in diesem Fall "filmfrei")
+        const encryptedPassword = "MTAyLDEwNywxMDgsMTA5LDEwMiwxMTQsMTAxLDEwNQ==";
+
+        document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const inputPassword = document.getElementById('passwordInput').value;
+            if (encrypt(inputPassword) === encryptedPassword) {
+                document.getElementById('passwordForm').style.display = 'none';
+                document.getElementById('generatorContent').classList.remove('hidden');
+            } else {
+                alert('Falsches Passwort!');
+            }
+        });
+
         let filmType = 'katalog';
 
         document.getElementById('btnKatalog').addEventListener('click', () => {
