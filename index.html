@@ -74,7 +74,6 @@
         }
         input[type="text"],
         input[type="number"],
-        input[type="password"],
         textarea {
             width: 100%;
             padding: 12px;
@@ -110,30 +109,13 @@
             padding: 12px;
             font-family: 'Courier New', Courier, monospace;
         }
-        #passwordForm {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        #passwordForm input {
-            margin-bottom: 10px;
-        }
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>FilmFrei Generator</h1>
-        
-        <form id="passwordForm">
-            <input type="password" id="passwordInput" placeholder="Passwort eingeben" required>
-            <button type="submit" class="btn btn-primary">Zugriff erhalten</button>
-        </form>
 
-        <div id="generatorContent" class="hidden">
+        <div id="generatorContent">
             <div class="btn-group">
                 <button id="btnKatalog" class="btn btn-primary">Filmfrei Katalog</button>
                 <button id="btnNormal" class="btn btn-secondary">Filmfrei Normal</button>
@@ -171,28 +153,6 @@
     </div>
 
     <script>
-        function getSystemInfo() {
-            const info = {
-                browser: navigator.userAgent,
-                language: navigator.language,
-                cookiesEnabled: navigator.cookieEnabled,
-                FilmFrei2024: true,
-                onlineStatus: navigator.onLine
-            };
-            return Object.entries(info).find(([key, value]) => typeof value === 'boolean' && value)[0];
-        }
-
-        document.getElementById('passwordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const inputPassword = document.getElementById('passwordInput').value;
-            if (inputPassword === getSystemInfo()) {
-                document.getElementById('passwordForm').style.display = 'none';
-                document.getElementById('generatorContent').classList.remove('hidden');
-            } else {
-                alert('Falsches Passwort!');
-            }
-        });
-
         let filmType = 'katalog';
 
         document.getElementById('btnKatalog').addEventListener('click', () => {
