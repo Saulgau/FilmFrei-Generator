@@ -12,123 +12,183 @@
             --input-border: #3a3a3a;
             --btn-primary: #4a90e2;
             --btn-secondary: #6c757d;
+            --btn-success: #28a745;
             --card-bg: #2a2a2a;
+            --tab-active: #4a90e2;
+            --tab-inactive: #2a2a2a;
         }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu;
             background-color: var(--bg-color);
             color: var(--text-color);
-            transition: all 0.3s ease;
+            line-height: 1.6;
+            padding: 20px;
         }
+
         .container {
-            max-width: 800px;
-            margin: auto;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
             background: var(--card-bg);
-            padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        h1 {
-            text-align: center;
+
+        h1, h2, h3 {
             color: var(--text-color);
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
         }
-        .btn-group {
+
+        .tabs {
             display: flex;
+            margin-bottom: 20px;
+            gap: 10px;
             justify-content: center;
-            margin-bottom: 30px;
         }
-        .btn {
-            padding: 12px 24px;
-            margin: 0 10px;
+
+        .tab-button {
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
+            background: var(--tab-inactive);
+            color: var(--text-color);
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1em;
-            font-weight: bold;
+            font-size: 16px;
         }
-        .btn-primary {
-            background-color: var(--btn-primary);
-            color: white;
+
+        .tab-button.active {
+            background: var(--tab-active);
         }
-        .btn-secondary {
-            background-color: var(--btn-secondary);
-            color: white;
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: var(--input-bg);
+            border-radius: 5px;
         }
-        .btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+
+        .tab-content.active {
+            display: block;
         }
+
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
+
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
+            margin-bottom: 5px;
         }
+
         input[type="text"],
         input[type="number"],
         textarea {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
+            background: var(--input-bg);
             border: 1px solid var(--input-border);
-            border-radius: 5px;
-            box-sizing: border-box;
-            background-color: var(--input-bg);
             color: var(--text-color);
-            font-size: 1em;
+            border-radius: 5px;
+            margin-bottom: 10px;
         }
+
+        button {
+            padding: 10px 20px;
+            background: var(--btn-primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button.success {
+            background: var(--btn-success);
+        }
+
+        .season-container {
+            border: 1px solid var(--input-border);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .episode-container {
+            margin-left: 20px;
+            padding: 10px;
+            border-left: 2px solid var(--input-border);
+        }
+
+        .output-container {
+            margin-top: 20px;
+        }
+
+        #generatedOutput {
+            width: 100%;
+            min-height: 200px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+
+        .copy-button {
+            display: block;
+            margin: 10px auto;
+            background: var(--btn-success);
+        }
+
+        .format-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
         .duration-inputs {
             display: flex;
             gap: 10px;
+            align-items: center;
         }
+
         .duration-inputs input {
             width: 70px;
-        }
-        input:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--btn-primary);
-            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-        }
-        #generatedOutput {
-            width: 100%;
-            height: 200px;
-            margin-top: 20px;
-            resize: vertical;
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            border: 1px solid var(--input-border);
-            border-radius: 5px;
-            padding: 12px;
-            font-family: 'Courier New', Courier, monospace;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>FilmFrei Generator</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('film')">Film</button>
+            <button class="tab-button" onclick="showTab('serie')">Serie</button>
+        </div>
 
-        <div id="generatorContent">
-            <div class="btn-group">
-                <button id="btnKatalog" class="btn btn-primary">Filmfrei Katalog</button>
-                <button id="btnNormal" class="btn btn-secondary">Filmfrei Normal</button>
+        <!-- Film Tab -->
+        <div id="filmTab" class="tab-content active">
+            <div class="format-toggle">
+                <button onclick="setFilmFormat('katalog')" class="tab-button active" id="katalogBtn">Katalog Format</button>
+                <button onclick="setFilmFormat('normal')" class="tab-button" id="normalBtn">Normal Format</button>
             </div>
-            
+
             <form id="filmForm">
                 <div class="form-group">
-                    <label for="title">Titel:</label>
-                    <input type="text" id="title" required>
+                    <label>Titel:</label>
+                    <input type="text" id="filmTitle" required>
                 </div>
                 <div class="form-group">
-                    <label for="year">Jahr:</label>
-                    <input type="number" id="year" required>
+                    <label>Jahr:</label>
+                    <input type="number" id="filmYear" required>
                 </div>
                 <div class="form-group">
                     <label>Dauer:</label>
@@ -138,55 +198,139 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="poster">Poster URL:</label>
-                    <input type="text" id="poster" required>
+                    <label>Poster URL:</label>
+                    <input type="text" id="filmPoster" required>
                 </div>
                 <div class="form-group">
-                    <label for="streamUrl">Stream URL:</label>
-                    <input type="text" id="streamUrl" required>
+                    <label>Stream URL:</label>
+                    <input type="text" id="filmStream" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Generieren</button>
+                <button type="submit">Generieren</button>
             </form>
-            
+        </div>
+
+        <!-- Serien Tab -->
+        <div id="serieTab" class="tab-content">
+            <form id="serieForm">
+                <div class="form-group">
+                    <label>Serien ID:</label>
+                    <input type="text" id="serieId" required>
+                </div>
+                <div class="form-group">
+                    <label>Titel:</label>
+                    <input type="text" id="serieTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Jahr:</label>
+                    <input type="number" id="serieYear" required>
+                </div>
+                <div class="form-group">
+                    <label>Poster URL:</label>
+                    <input type="text" id="seriePoster" required>
+                </div>
+
+                <div id="seasonsContainer">
+                    <!-- Staffeln werden hier dynamisch hinzugefügt -->
+                </div>
+
+                <button type="button" onclick="addSeason()">Neue Staffel hinzufügen</button>
+                <button type="submit">Serie generieren</button>
+            </form>
+        </div>
+
+        <div class="output-container">
             <textarea id="generatedOutput" readonly></textarea>
+            <button class="copy-button" onclick="copyToClipboard()">In Zwischenablage kopieren</button>
         </div>
     </div>
 
     <script>
-        let filmType = 'katalog';
+        let currentFilmFormat = 'katalog';
+        let seasonCounter = 0;
 
-        document.getElementById('btnKatalog').addEventListener('click', () => {
-            filmType = 'katalog';
-            document.getElementById('btnKatalog').classList.add('btn-primary');
-            document.getElementById('btnKatalog').classList.remove('btn-secondary');
-            document.getElementById('btnNormal').classList.add('btn-secondary');
-            document.getElementById('btnNormal').classList.remove('btn-primary');
-        });
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            // Reset output
+            document.getElementById('generatedOutput').value = '';
+        }
 
-        document.getElementById('btnNormal').addEventListener('click', () => {
-            filmType = 'normal';
-            document.getElementById('btnNormal').classList.add('btn-primary');
-            document.getElementById('btnNormal').classList.remove('btn-secondary');
-            document.getElementById('btnKatalog').classList.add('btn-secondary');
-            document.getElementById('btnKatalog').classList.remove('btn-primary');
-        });
+        function setFilmFormat(format) {
+            currentFilmFormat = format;
+            document.getElementById('katalogBtn').classList.toggle('active', format === 'katalog');
+            document.getElementById('normalBtn').classList.toggle('active', format === 'normal');
+        }
+
+        function addSeason() {
+            seasonCounter++;
+            const seasonContainer = document.createElement('div');
+            seasonContainer.className = 'season-container';
+            seasonContainer.innerHTML = `
+                <h3>Staffel ${seasonCounter}</h3>
+                <div class="episodes-container" id="season${seasonCounter}Episodes">
+                </div>
+                <button type="button" onclick="addEpisode(${seasonCounter})">Neue Episode hinzufügen</button>
+                <button type="button" onclick="removeSeason(this)">Staffel entfernen</button>
+            `;
+            document.getElementById('seasonsContainer').appendChild(seasonContainer);
+            addEpisode(seasonCounter);
+        }
+
+        function addEpisode(seasonNum) {
+            const episodeContainer = document.createElement('div');
+            episodeContainer.className = 'episode-container';
+            const episodesContainer = document.getElementById(`season${seasonNum}Episodes`);
+            const episodeNum = episodesContainer.children.length + 1;
+            
+            episodeContainer.innerHTML = `
+                <h4>Episode ${episodeNum}</h4>
+                <div class="form-group">
+                    <label>Titel:</label>
+                    <input type="text" class="episode-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Stream URL:</label>
+                    <input type="text" class="episode-url" required>
+                </div>
+                <button type="button" onclick="removeEpisode(this)">Episode entfernen</button>
+            `;
+            episodesContainer.appendChild(episodeContainer);
+        }
+
+        function removeSeason(button) {
+            button.parentElement.remove();
+        }
+
+        function removeEpisode(button) {
+            button.parentElement.remove();
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('generatedOutput');
+            output.select();
+            document.execCommand('copy');
+            alert('In Zwischenablage kopiert!');
+        }
 
         document.getElementById('filmForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const title = document.getElementById('title').value;
-            const year = parseInt(document.getElementById('year').value);
+            const title = document.getElementById('filmTitle').value;
+            const year = parseInt(document.getElementById('filmYear').value);
             const hours = parseInt(document.getElementById('durationHours').value);
             const minutes = parseInt(document.getElementById('durationMinutes').value);
-            const poster = document.getElementById('poster').value;
-            const streamUrl = document.getElementById('streamUrl').value;
+            const poster = document.getElementById('filmPoster').value;
+            const streamUrl = document.getElementById('filmStream').value;
 
-            // Calculate duration in seconds
             const durationInSeconds = (hours * 3600) + (minutes * 60);
 
-            if (filmType === 'katalog') {
+            if (currentFilmFormat === 'katalog') {
                 const filmData = {
-                    id: title,
+                    id: title.toLowerCase().replace(/\s+/g, '_'),
                     title: title,
                     year: year,
                     duration: durationInSeconds,
@@ -194,23 +338,55 @@
                     streamUrl: streamUrl
                 };
 
-                document.getElementById('generatedOutput').value = JSON.stringify(filmData, null, 6) + ',';
+                document.getElementById('generatedOutput').value = JSON.stringify(filmData, null, 2) + ',';
             } else {
                 const durationString = `${hours} h ${minutes} min`;
-
                 const htmlStructure = `
-                <div class="film-card" data-title="${title}" data-duration="${durationInSeconds}">
-                    <img src="${poster}" alt="${title} Poster">
-                    <h2>${title}</h2>
-                    <p>Jahr: ${year}</p>
-                    <p>Dauer: ${durationString}</p>
-                    <button onclick="openVideoPlayer('${streamUrl}', '${title}')">Film ansehen</button>
-                    <div class="progress-bar"></div>
-                </div>`;
+<div class="film-card" data-title="${title}" data-duration="${durationInSeconds}">
+    <img src="${poster}" alt="${title} Poster">
+    <h2>${title}</h2>
+    <p>Jahr: ${year}</p>
+    <p>Dauer: ${durationString}</p>
+    <button onclick="openVideoPlayer('${streamUrl}', '${title}')">Film ansehen</button>
+    <div class="progress-bar"></div>
+</div>`;
 
                 document.getElementById('generatedOutput').value = htmlStructure;
             }
         });
+
+        document.getElementById('serieForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const seriesData = {
+                id: document.getElementById('serieId').value,
+                title: document.getElementById('serieTitle').value,
+                year: document.getElementById('serieYear').value,
+                poster: document.getElementById('seriePoster').value,
+                seasons: []
+            };
+
+            document.querySelectorAll('.season-container').forEach((seasonContainer, seasonIndex) => {
+                const seasonEpisodes = [];
+                seasonContainer.querySelectorAll('.episode-container').forEach((episodeContainer, episodeIndex) => {
+                    seasonEpisodes.push({
+                        number: episodeIndex + 1,
+                        title: episodeContainer.querySelector('.episode-title').value,
+                        streamUrl: episodeContainer.querySelector('.episode-url').value
+                    });
+                });
+
+                seriesData.seasons.push({
+                    number: seasonIndex + 1,
+                    episodes: seasonEpisodes
+                });
+            });
+
+            document.getElementById('generatedOutput').value = JSON.stringify(seriesData, null, 2);
+        });
+
+        // Initialize with an empty season for series
+        addSeason();
     </script>
 </body>
 </html>
