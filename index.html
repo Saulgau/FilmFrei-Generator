@@ -3,390 +3,545 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FilmFrei Generator</title>
+    <title>Film Generator - Im Filmfrei-Style</title>
     <style>
-        :root {
-            --bg-color: #1a1a1a;
-            --text-color: #e0e0e0;
-            --input-bg: #2a2a2a;
-            --input-border: #3a3a3a;
-            --btn-primary: #4a90e2;
-            --btn-secondary: #6c757d;
-            --btn-success: #28a745;
-            --card-bg: #2a2a2a;
-            --tab-active: #4a90e2;
-            --tab-inactive: #2a2a2a;
-        }
-
+        /* Reset und Grundeinstellungen */
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         body {
-            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: var(--card-bg);
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        h1, h2, h3 {
-            color: var(--text-color);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .tabs {
+            background-color: #121212;
+            color: #F5F5F5;
+            overflow-x: hidden;
+            min-height: 100vh;
             display: flex;
-            margin-bottom: 20px;
-            gap: 10px;
+            flex-direction: column;
+        }
+
+        /* Header-Bereich */
+        header {
+            position: sticky;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background-color: #0A84FF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
             justify-content: center;
-        }
-
-        .tab-button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background: var(--tab-inactive);
-            color: var(--text-color);
-            cursor: pointer;
+            font-weight: bold;
             font-size: 16px;
+            box-shadow: 0 0 10px rgba(10, 132, 255, 0.3);
+            transition: all 0.3s ease;
         }
 
-        .tab-button.active {
-            background: var(--tab-active);
+        .logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(10, 132, 255, 0.5);
         }
 
-        .tab-content {
-            display: none;
-            padding: 20px;
-            background: var(--input-bg);
-            border-radius: 5px;
+        .brand-name {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
 
-        .tab-content.active {
-            display: block;
+        /* Hauptbereich */
+        main {
+            padding: 40px;
+            flex: 1;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #F5F5F5;
+        }
+
+        /* Formular-Bereich */
+        .generator-form {
+            background-color: #1A1A1A;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        label {
+        .form-label {
             display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #DDDDDD;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #222;
+            color: #F5F5F5;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #0A84FF;
+            box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.3);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .iframe-helper {
+            display: block;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* Button */
+        .generate-btn {
+            display: block;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: none;
+            background-color: #0A84FF;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .generate-btn:hover {
+            background-color: #0071e3;
+        }
+
+        /* Ergebnis-Bereich */
+        .result-container {
+            background-color: #1A1A1A;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #F5F5F5;
+        }
+
+        .result-code {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #222;
+            color: #0A84FF;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+
+        .copy-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            background-color: #2A2A2A;
+            color: #F5F5F5;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: #333;
+        }
+
+        .preview-container {
+            margin-top: 30px;
+        }
+
+        .preview-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #F5F5F5;
+        }
+
+        .preview-card {
+            display: flex;
+            flex-direction: column;
+            background-color: #222;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+        }
+
+        .preview-image {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            background-color: #333;
+        }
+
+        .preview-info {
+            padding: 20px;
+        }
+
+        .preview-film-title {
+            font-size: 18px;
+            font-weight: 600;
             margin-bottom: 5px;
         }
 
-        input[type="text"],
-        input[type="number"],
-        textarea {
-            width: 100%;
-            padding: 10px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            color: var(--text-color);
-            border-radius: 5px;
+        .preview-film-meta {
+            display: flex;
+            gap: 15px;
             margin-bottom: 10px;
+            color: #BBBBBB;
+            font-size: 14px;
         }
 
-        button {
-            padding: 10px 20px;
-            background: var(--btn-primary);
+        .preview-film-desc {
+            color: #DDDDDD;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            .generator-form, .result-container {
+                padding: 20px;
+            }
+        }
+
+        /* Highlight-Effekt für die Kopieren-Meldung */
+        .copy-feedback {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #0A84FF;
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        button.success {
-            background: var(--btn-success);
-        }
-
-        .season-container {
-            border: 1px solid var(--input-border);
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 5px;
-        }
-
-        .episode-container {
-            margin-left: 20px;
-            padding: 10px;
-            border-left: 2px solid var(--input-border);
-        }
-
-        .output-container {
-            margin-top: 20px;
-        }
-
-        #generatedOutput {
-            width: 100%;
-            min-height: 200px;
-            background: var(--input-bg);
-            color: var(--text-color);
-            padding: 10px;
-            border-radius: 5px;
-            font-family: monospace;
-        }
-
-        .copy-button {
-            display: block;
-            margin: 10px auto;
-            background: var(--btn-success);
-        }
-
-        .format-toggle {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-
-        .duration-inputs {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .duration-inputs input {
-            width: 70px;
+        .copy-feedback.active {
+            opacity: 1;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>FilmFrei Generator</h1>
-        
-        <div class="tabs">
-            <button class="tab-button active" onclick="showTab('film')">Film</button>
-            <button class="tab-button" onclick="showTab('serie')">Serie</button>
+    <!-- Header mit Logo -->
+    <header>
+        <div class="logo-container">
+            <div class="logo">F</div>
+            <div class="brand-name">Film Generator</div>
         </div>
+    </header>
 
-        <!-- Film Tab -->
-        <div id="filmTab" class="tab-content active">
-            <div class="format-toggle">
-                <button onclick="setFilmFormat('katalog')" class="tab-button active" id="katalogBtn">Katalog Format</button>
-                <button onclick="setFilmFormat('normal')" class="tab-button" id="normalBtn">Normal Format</button>
+    <!-- Hauptinhalt -->
+    <main>
+        <section>
+            <h2 class="section-title">Filmdetails eingeben</h2>
+            <div class="generator-form">
+                <div class="form-group">
+                    <label for="filmTitel" class="form-label">Filmtitel</label>
+                    <input type="text" id="filmTitel" class="form-input" placeholder="z.B. Matrix" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="filmJahr" class="form-label">Erscheinungsjahr</label>
+                    <input type="number" id="filmJahr" class="form-input" placeholder="z.B. 1999" min="1900" max="2099" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="filmDatum" class="form-label">Hochgeladen am</label>
+                    <input type="date" id="filmDatum" class="form-input" value="" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="filmBeschreibung" class="form-label">Beschreibung</label>
+                    <textarea id="filmBeschreibung" class="form-textarea" placeholder="Beschreibe den Film..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="filmCover" class="form-label">Cover-Bild URL</label>
+                    <input type="text" id="filmCover" class="form-input" placeholder="https://beispiel.com/bild.jpg oder /api/placeholder/400/600">
+                </div>
+                
+                <div class="form-group">
+                    <label for="filmIframe" class="form-label">iFrame-Code</label>
+                    <textarea id="filmIframe" class="form-textarea" placeholder='<iframe title="Film Titel" width="560" height="315" src="https://clip.place/videos/embed/..." frameborder="0" allowfullscreen="" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>' required></textarea>
+                    <span class="iframe-helper">Füge den kompletten iframe-Code ein - Die width und height werden automatisch auf width="100%" height="315" angepasst für optimale Darstellung auf allen Geräten</span>
+                </div>
+                
+                <button id="generateBtn" class="generate-btn">Film-Code generieren</button>
             </div>
-
-            <form id="filmForm">
-                <div class="form-group">
-                    <label>Titel:</label>
-                    <input type="text" id="filmTitle" required>
-                </div>
-                <div class="form-group">
-                    <label>Jahr:</label>
-                    <input type="number" id="filmYear" required>
-                </div>
-                <div class="form-group">
-                    <label>Dauer:</label>
-                    <div class="duration-inputs">
-                        <input type="number" id="durationHours" min="0" required> <span>h</span>
-                        <input type="number" id="durationMinutes" min="0" max="59" required> <span>min</span>
+        </section>
+        
+        <section id="resultSection" class="result-container">
+            <h2 class="result-title">Generierter Film-Code</h2>
+            <pre id="resultCode" class="result-code"></pre>
+            <button id="copyBtn" class="copy-btn">Code kopieren</button>
+            
+            <div class="preview-container">
+                <h3 class="preview-title">Vorschau:</h3>
+                <div class="preview-card">
+                    <img id="previewImage" class="preview-image" src="/api/placeholder/400/600" alt="Film Cover">
+                    <div class="preview-info">
+                        <div id="previewTitle" class="preview-film-title">Filmtitel</div>
+                        <div class="preview-film-meta">
+                            <span id="previewYear">Jahr: 2025</span>
+                            <span id="previewDate">Hochgeladen: 01.01.2025</span>
+                        </div>
+                        <p id="previewDesc" class="preview-film-desc">Filmbeschreibung wird hier angezeigt...</p>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Poster URL:</label>
-                    <input type="text" id="filmPoster" required>
-                </div>
-                <div class="form-group">
-                    <label>Stream URL:</label>
-                    <input type="text" id="filmStream" required>
-                </div>
-                <button type="submit">Generieren</button>
-            </form>
-        </div>
-
-        <!-- Serien Tab -->
-        <div id="serieTab" class="tab-content">
-            <form id="serieForm">
-                <div class="form-group">
-                    <label>Serien ID:</label>
-                    <input type="text" id="serieId" required>
-                </div>
-                <div class="form-group">
-                    <label>Titel:</label>
-                    <input type="text" id="serieTitle" required>
-                </div>
-                <div class="form-group">
-                    <label>Jahr:</label>
-                    <input type="number" id="serieYear" required>
-                </div>
-                <div class="form-group">
-                    <label>Poster URL:</label>
-                    <input type="text" id="seriePoster" required>
-                </div>
-
-                <div id="seasonsContainer">
-                    <!-- Staffeln werden hier dynamisch hinzugefügt -->
-                </div>
-
-                <button type="button" onclick="addSeason()">Neue Staffel hinzufügen</button>
-                <button type="submit">Serie generieren</button>
-            </form>
-        </div>
-
-        <div class="output-container">
-            <textarea id="generatedOutput" readonly></textarea>
-            <button class="copy-button" onclick="copyToClipboard()">In Zwischenablage kopieren</button>
-        </div>
-    </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Kopier-Feedback -->
+    <div id="copyFeedback" class="copy-feedback">Code wurde kopiert!</div>
 
     <script>
-        let currentFilmFormat = 'katalog';
-        let seasonCounter = 0;
+        // DOM-Elemente
+        const filmTitelInput = document.getElementById('filmTitel');
+        const filmJahrInput = document.getElementById('filmJahr');
+        const filmDatumInput = document.getElementById('filmDatum');
+        const filmBeschreibungInput = document.getElementById('filmBeschreibung');
+        const filmCoverInput = document.getElementById('filmCover');
+        const filmIframeInput = document.getElementById('filmIframe');
+        const generateBtn = document.getElementById('generateBtn');
+        const resultSection = document.getElementById('resultSection');
+        const resultCode = document.getElementById('resultCode');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyFeedback = document.getElementById('copyFeedback');
+        
+        // Vorschau-Elemente
+        const previewImage = document.getElementById('previewImage');
+        const previewTitle = document.getElementById('previewTitle');
+        const previewYear = document.getElementById('previewYear');
+        const previewDate = document.getElementById('previewDate');
+        const previewDesc = document.getElementById('previewDesc');
 
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById(tabName + 'Tab').classList.add('active');
-            event.target.classList.add('active');
-            
-            // Reset output
-            document.getElementById('generatedOutput').value = '';
-        }
+        // Aktuelles Datum als Standardwert setzen
+        const heute = new Date();
+        const formatDatum = heute.toISOString().split('T')[0];
+        filmDatumInput.value = formatDatum;
 
-        function setFilmFormat(format) {
-            currentFilmFormat = format;
-            document.getElementById('katalogBtn').classList.toggle('active', format === 'katalog');
-            document.getElementById('normalBtn').classList.toggle('active', format === 'normal');
-        }
+        // Generate-Button Event
+        generateBtn.addEventListener('click', generateFilmCode);
 
-        function addSeason() {
-            seasonCounter++;
-            const seasonContainer = document.createElement('div');
-            seasonContainer.className = 'season-container';
-            seasonContainer.innerHTML = `
-                <h3>Staffel ${seasonCounter}</h3>
-                <div class="episodes-container" id="season${seasonCounter}Episodes">
-                </div>
-                <button type="button" onclick="addEpisode(${seasonCounter})">Neue Episode hinzufügen</button>
-                <button type="button" onclick="removeSeason(this)">Staffel entfernen</button>
-            `;
-            document.getElementById('seasonsContainer').appendChild(seasonContainer);
-            addEpisode(seasonCounter);
-        }
-
-        function addEpisode(seasonNum) {
-            const episodeContainer = document.createElement('div');
-            episodeContainer.className = 'episode-container';
-            const episodesContainer = document.getElementById(`season${seasonNum}Episodes`);
-            const episodeNum = episodesContainer.children.length + 1;
-            
-            episodeContainer.innerHTML = `
-                <h4>Episode ${episodeNum}</h4>
-                <div class="form-group">
-                    <label>Titel:</label>
-                    <input type="text" class="episode-title" required>
-                </div>
-                <div class="form-group">
-                    <label>Stream URL:</label>
-                    <input type="text" class="episode-url" required>
-                </div>
-                <button type="button" onclick="removeEpisode(this)">Episode entfernen</button>
-            `;
-            episodesContainer.appendChild(episodeContainer);
-        }
-
-        function removeSeason(button) {
-            button.parentElement.remove();
-        }
-
-        function removeEpisode(button) {
-            button.parentElement.remove();
-        }
-
-        function copyToClipboard() {
-            const output = document.getElementById('generatedOutput');
-            output.select();
-            document.execCommand('copy');
-            alert('In Zwischenablage kopiert!');
-        }
-
-        document.getElementById('filmForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const title = document.getElementById('filmTitle').value;
-            const year = parseInt(document.getElementById('filmYear').value);
-            const hours = parseInt(document.getElementById('durationHours').value);
-            const minutes = parseInt(document.getElementById('durationMinutes').value);
-            const poster = document.getElementById('filmPoster').value;
-            const streamUrl = document.getElementById('filmStream').value;
-
-            const durationInSeconds = (hours * 3600) + (minutes * 60);
-
-            if (currentFilmFormat === 'katalog') {
-                const filmData = {
-                    id: title.toLowerCase().replace(/\s+/g, '_'),
-                    title: title,
-                    year: year,
-                    duration: durationInSeconds,
-                    poster: poster,
-                    streamUrl: streamUrl
-                };
-
-                document.getElementById('generatedOutput').value = JSON.stringify(filmData, null, 2) + ',';
-            } else {
-                const durationString = `${hours} h ${minutes} min`;
-                const htmlStructure = `
-<div class="film-card" data-title="${title}" data-duration="${durationInSeconds}">
-    <img src="${poster}" alt="${title} Poster">
-    <h2>${title}</h2>
-    <p>Jahr: ${year}</p>
-    <p>Dauer: ${durationString}</p>
-    <button onclick="openVideoPlayer('${streamUrl}', '${title}')">Film ansehen</button>
-    <div class="progress-bar"></div>
-</div>`;
-
-                document.getElementById('generatedOutput').value = htmlStructure;
+        function generateFilmCode() {
+            // Eingaben überprüfen
+            if (!filmTitelInput.value || !filmJahrInput.value) {
+                alert('Bitte mindestens Titel und Jahr angeben!');
+                return;
             }
-        });
-
-        document.getElementById('serieForm').addEventListener('submit', function(e) {
-            e.preventDefault();
             
-            const seriesData = {
-                id: document.getElementById('serieId').value,
-                title: document.getElementById('serieTitle').value,
-                year: document.getElementById('serieYear').value,
-                poster: document.getElementById('seriePoster').value,
-                seasons: []
+            // Daten sammeln
+            let iframeCode = filmIframeInput.value.trim();
+            
+            // iFrame-Code anpassen für optimale Anzeige auf allen Geräten
+            if (iframeCode) {
+                // width und height Attribute ersetzen
+                iframeCode = iframeCode.replace(/width="[^"]*"/g, 'width="100%"');
+                iframeCode = iframeCode.replace(/height="[^"]*"/g, 'height="315"');
+                
+                // Falls keine width/height Attribute vorhanden sind, hinzufügen
+                if (!iframeCode.includes('width=')) {
+                    iframeCode = iframeCode.replace('<iframe', '<iframe width="100%"');
+                }
+                if (!iframeCode.includes('height=')) {
+                    iframeCode = iframeCode.replace('<iframe', '<iframe height="315"');
+                }
+            }
+            
+            const filmDaten = {
+                titel: filmTitelInput.value.trim(),
+                jahr: parseInt(filmJahrInput.value),
+                hochgeladenAm: filmDatumInput.value,
+                beschreibung: filmBeschreibungInput.value.trim(),
+                cover: filmCoverInput.value.trim() || "/api/placeholder/400/600",
+                iframe: iframeCode
             };
+            
+            // Code generieren
+            const code = `{
+    titel: "${escapeString(filmDaten.titel)}",
+    jahr: ${filmDaten.jahr},
+    hochgeladenAm: "${filmDaten.hochgeladenAm}",
+    beschreibung: "${escapeString(filmDaten.beschreibung)}",
+    cover: "${escapeString(filmDaten.cover)}",
+    iframe: "${escapeString(filmDaten.iframe)}"
+},`;
+            
+            // Code im Ergebnisbereich anzeigen
+            resultCode.textContent = code;
+            
+            // Zusätzliche Validierung der Code-Struktur
+            validateCodeStructure();
+            
+            resultSection.style.display = 'block';
+            
+            // Zu Ergebnisbereich scrollen
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+            
+            // Vorschau aktualisieren
+            updatePreview(filmDaten);
+        }
 
-            document.querySelectorAll('.season-container').forEach((seasonContainer, seasonIndex) => {
-                const seasonEpisodes = [];
-                seasonContainer.querySelectorAll('.episode-container').forEach((episodeContainer, episodeIndex) => {
-                    seasonEpisodes.push({
-                        number: episodeIndex + 1,
-                        title: episodeContainer.querySelector('.episode-title').value,
-                        streamUrl: episodeContainer.querySelector('.episode-url').value
-                    });
+        // Sonderzeichen in Strings escapen
+        function escapeString(str) {
+            if (!str) return "";
+            return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+        }
+        
+        // Validierung der Code-Struktur
+        function validateCodeStructure() {
+            let codeText = resultCode.textContent;
+            
+            // Prüfen auf fehlende Klammern
+            let openBraces = (codeText.match(/{/g) || []).length;
+            let closeBraces = (codeText.match(/}/g) || []).length;
+            
+            if (openBraces > closeBraces) {
+                codeText += "}".repeat(openBraces - closeBraces);
+            } else if (closeBraces > openBraces) {
+                codeText = codeText.replace(/}+,?$/, "");
+                codeText += "}".repeat(openBraces);
+            }
+            
+            // Sicherstellen, dass das Komma am Ende vorhanden ist
+            if (!codeText.trim().endsWith(',')) {
+                codeText = codeText.replace(/}$/, "},");
+            }
+            
+            resultCode.textContent = codeText;
+        }
+        
+        // Vorschau aktualisieren
+        function updatePreview(filmDaten) {
+            previewImage.src = filmDaten.cover;
+            previewTitle.textContent = filmDaten.titel;
+            previewYear.textContent = `Jahr: ${filmDaten.jahr}`;
+            
+            // Datum formatieren
+            const uploadDate = new Date(filmDaten.hochgeladenAm);
+            const formattedDate = new Intl.DateTimeFormat('de-DE', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }).format(uploadDate);
+            previewDate.textContent = `Hochgeladen: ${formattedDate}`;
+            
+            previewDesc.textContent = filmDaten.beschreibung;
+        }
+        
+        // Copy-Button Event
+        copyBtn.addEventListener('click', () => {
+            // Code in Zwischenablage kopieren
+            navigator.clipboard.writeText(resultCode.textContent)
+                .then(() => {
+                    // Feedback anzeigen
+                    copyFeedback.classList.add('active');
+                    setTimeout(() => {
+                        copyFeedback.classList.remove('active');
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Fehler beim Kopieren:', err);
+                    alert('Fehler beim Kopieren. Bitte manuell kopieren.');
                 });
-
-                seriesData.seasons.push({
-                    number: seasonIndex + 1,
-                    episodes: seasonEpisodes
-                });
-            });
-
-            document.getElementById('generatedOutput').value = JSON.stringify(seriesData, null, 2);
         });
 
-        // Initialize with an empty season for series
-        addSeason();
+        // Live-Vorschau während der Eingabe
+        const allInputs = [filmTitelInput, filmJahrInput, filmDatumInput, filmBeschreibungInput, filmCoverInput];
+        allInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                const filmDaten = {
+                    titel: filmTitelInput.value.trim() || "Filmtitel",
+                    jahr: parseInt(filmJahrInput.value) || 2025,
+                    hochgeladenAm: filmDatumInput.value || formatDatum,
+                    beschreibung: filmBeschreibungInput.value.trim() || "Filmbeschreibung wird hier angezeigt...",
+                    cover: filmCoverInput.value.trim() || "/api/placeholder/400/600",
+                    iframe: filmIframeInput.value.trim()
+                };
+                
+                updatePreview(filmDaten);
+            });
+        });
+
+        // Hintergrund-Farbverlauf-Animation (dezent)
+        const mainElement = document.querySelector('main');
+        let gradientPosition = 0;
+
+        function animateGradient() {
+            gradientPosition = (gradientPosition + 0.2) % 360;
+            const gradient = `radial-gradient(circle at ${50 + Math.sin(gradientPosition * Math.PI / 180) * 10}% ${50 + Math.cos(gradientPosition * Math.PI / 180) * 10}%, rgba(10, 132, 255, 0.03), transparent 60%)`;
+            mainElement.style.backgroundImage = gradient;
+            requestAnimationFrame(animateGradient);
+        }
+
+        // Animation starten
+        animateGradient();
     </script>
 </body>
 </html>
